@@ -361,8 +361,8 @@ export default function IzinCutiAdminPage() {
 
       {/* All Data Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900">
             {filterStatus ? `Pengajuan ${filterStatus === 'PENDING' ? 'Pending' : filterStatus === 'APPROVED' ? 'Disetujui' : 'Ditolak'}` : 'Semua Pengajuan'} ({filteredData.length})
           </h3>
         </div>
@@ -370,49 +370,52 @@ export default function IzinCutiAdminPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Karyawan</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jenis</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Durasi</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Alasan</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase">Karyawan</th>
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase">Jenis</th>
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Tanggal</th>
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Durasi</th>
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">Alasan</th>
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredData.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={7} className="px-3 sm:px-6 py-6 sm:py-8 text-center text-gray-500 text-sm">
                     Tidak ada data pengajuan
                   </td>
                 </tr>
               ) : (
                 filteredData.map((item) => (
                   <tr key={item.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{item.karyawan.nama}</div>
-                      <div className="text-sm text-gray-500">{item.karyawan.nip}</div>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                      <div className="text-xs sm:text-sm font-medium text-gray-900">{item.karyawan.nama}</div>
+                      <div className="text-xs text-gray-500">{item.karyawan.nip}</div>
+                      <div className="text-xs text-gray-400 sm:hidden mt-1">
+                        {formatDate(item.tanggal_mulai)} ({calculateDays(item.tanggal_mulai, item.tanggal_selesai)} hari)
+                      </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getJenisBadge(item.jenis)}`}>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                      <span className={`px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full ${getJenisBadge(item.jenis)}`}>
                         {item.jenis}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 hidden sm:table-cell">
                       {formatDate(item.tanggal_mulai)} - {formatDate(item.tanggal_selesai)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 hidden md:table-cell">
                       {calculateDays(item.tanggal_mulai, item.tanggal_selesai)} hari
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" title={item.alasan}>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-500 max-w-xs truncate hidden lg:table-cell" title={item.alasan}>
                       {item.alasan}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(item.status)}`}>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                      <span className={`px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full ${getStatusBadge(item.status)}`}>
                         {item.status === 'PENDING' ? 'Pending' : item.status === 'APPROVED' ? 'Disetujui' : 'Ditolak'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm">
                       {item.status === 'PENDING' ? (
                         <div className="flex gap-2">
                           <button

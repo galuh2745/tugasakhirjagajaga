@@ -127,13 +127,13 @@ export default function RiwayatAbsensiPage() {
       {/* Table */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[500px]">
             <thead>
               <tr className="bg-gray-50/80">
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tanggal</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Jam Masuk</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Jam Pulang</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tanggal</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Masuk</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Pulang</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -160,17 +160,17 @@ export default function RiwayatAbsensiPage() {
                         index !== filteredRiwayat.length - 1 ? 'border-b border-gray-100' : ''
                       }`}
                     >
-                      <td className="px-6 py-4">
-                        <span className="text-sm font-medium text-gray-800">{formatDate(item.tanggal)}</span>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <span className="text-xs sm:text-sm font-medium text-gray-800">{formatDate(item.tanggal)}</span>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className="text-sm text-gray-600">{formatTime(item.jam_masuk)}</span>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <span className="text-xs sm:text-sm text-gray-600">{formatTime(item.jam_masuk)}</span>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className="text-sm text-gray-600">{formatTime(item.jam_pulang)}</span>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <span className="text-xs sm:text-sm text-gray-600">{formatTime(item.jam_pulang)}</span>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${status.class}`}>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <span className={`inline-flex items-center px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-xs font-medium ${status.class}`}>
                           {status.label}
                         </span>
                       </td>

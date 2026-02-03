@@ -7,3 +7,87 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Responsive table styles for mobile */
+@media (max-width: 768px) {
+  /* Make table cells more compact on mobile */
+  .mobile-table th,
+  .mobile-table td {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  /* Hide less important columns on mobile */
+  .hide-mobile {
+    display: none !important;
+  }
+  
+  /* Stack table content vertically on very small screens */
+  .mobile-stack {
+    display: block !important;
+  }
+  
+  .mobile-stack thead {
+    display: none;
+  }
+  
+  .mobile-stack tbody,
+  .mobile-stack tr {
+    display: block;
+  }
+  
+  .mobile-stack tr {
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    background: white;
+  }
+  
+  .mobile-stack td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0 !important;
+    border: none !important;
+    border-bottom: 1px solid #f3f4f6 !important;
+  }
+  
+  .mobile-stack td:last-child {
+    border-bottom: none !important;
+  }
+  
+  .mobile-stack td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-transform: uppercase;
+  }
+}
+
+/* Ensure table container is scrollable on mobile */
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+/* Custom scrollbar for table on mobile */
+.table-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}

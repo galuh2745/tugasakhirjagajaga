@@ -511,25 +511,26 @@ export default function ManajemenKaryawanPage() {
 
         {/* Karyawan Table */}
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h3 className="text-lg font-semibold text-gray-900">Daftar Karyawan ({karyawanList.length})</h3>
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">Daftar Karyawan ({karyawanList.length})</h3>
             {selectedIds.size > 0 && (
               <button
                 onClick={handleDeleteMultiple}
                 disabled={isDeleting}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-3 sm:px-4 py-1.5 sm:py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm"
               >
                 {isDeleting ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    Menghapus...
+                    <span className="hidden sm:inline">Menghapus...</span>
                   </>
                 ) : (
                   <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
-                    Hapus {selectedIds.size} Terpilih
+                    <span className="hidden sm:inline">Hapus {selectedIds.size} Terpilih</span>
+                    <span className="sm:hidden">Hapus ({selectedIds.size})</span>
                   </>
                 )}
               </button>
@@ -539,7 +540,7 @@ export default function ManajemenKaryawanPage() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left">
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-left">
                     <input
                       type="checkbox"
                       checked={karyawanList.length > 0 && selectedIds.size === karyawanList.length}
@@ -547,26 +548,26 @@ export default function ManajemenKaryawanPage() {
                       className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
                     />
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">NIP</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jenis</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No HP</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase">NIP</th>
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Email</th>
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Jenis</th>
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">No HP</th>
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {karyawanList.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="px-6 py-8 text-center text-gray-500">
+                    <td colSpan={8} className="px-3 sm:px-6 py-6 sm:py-8 text-center text-gray-500 text-sm">
                       Belum ada data karyawan
                     </td>
                   </tr>
                 ) : (
                   karyawanList.map((karyawan) => (
                     <tr key={karyawan.id} className={`hover:bg-gray-50 ${selectedIds.has(karyawan.id) ? 'bg-blue-50' : ''}`}>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                         <input
                           type="checkbox"
                           checked={selectedIds.has(karyawan.id)}
@@ -574,13 +575,17 @@ export default function ManajemenKaryawanPage() {
                           className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
                         />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{karyawan.nip}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{karyawan.nama}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{karyawan.email}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{karyawan.jenis_karyawan.nama_jenis}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{karyawan.no_hp}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium text-gray-900">{karyawan.nip}</td>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                        <div className="text-xs sm:text-sm text-gray-900">{karyawan.nama}</div>
+                        <div className="text-xs text-gray-500 md:hidden">{karyawan.email}</div>
+                        <div className="text-xs text-gray-400 sm:hidden">{karyawan.jenis_karyawan.nama_jenis}</div>
+                      </td>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 hidden md:table-cell">{karyawan.email}</td>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 hidden sm:table-cell">{karyawan.jenis_karyawan.nama_jenis}</td>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 hidden lg:table-cell">{karyawan.no_hp}</td>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                        <span className={`px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full ${
                           karyawan.status === 'AKTIF' 
                             ? 'bg-green-100 text-green-800' 
                             : 'bg-red-100 text-red-800'
@@ -588,7 +593,7 @@ export default function ManajemenKaryawanPage() {
                           {karyawan.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm">
                         <div className="flex gap-2">
                           <button
                             onClick={() => openEditModal(karyawan)}

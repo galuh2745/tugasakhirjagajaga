@@ -195,25 +195,25 @@ export default function DaftarAkunPage() {
       {/* Table Card */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[600px]">
             <thead>
               <tr className="bg-gray-50/80">
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Pengguna
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                   Email
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Role
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">
                   Jenis Karyawan
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                   Terdaftar
                 </th>
               </tr>
@@ -221,7 +221,7 @@ export default function DaftarAkunPage() {
             <tbody>
               {filteredAccounts.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-16 text-center">
+                  <td colSpan={6} className="px-3 sm:px-6 py-12 sm:py-16 text-center">
                     <div className="flex flex-col items-center gap-3">
                       <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
                         <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -240,57 +240,59 @@ export default function DaftarAkunPage() {
                       index !== filteredAccounts.length - 1 ? 'border-b border-gray-100' : ''
                     }`}
                   >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-100 to-red-50 flex items-center justify-center ring-2 ring-white shadow-sm">
-                          <span className="text-red-600 font-semibold text-sm">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-red-100 to-red-50 flex items-center justify-center ring-2 ring-white shadow-sm">
+                          <span className="text-red-600 font-semibold text-xs sm:text-sm">
                             {account.name.charAt(0).toUpperCase()}
                           </span>
                         </div>
                         <div>
-                          <p className="font-medium text-gray-800">{account.name}</p>
+                          <p className="font-medium text-gray-800 text-xs sm:text-sm">{account.name}</p>
                           {account.karyawan && (
                             <p className="text-xs text-gray-400 mt-0.5">{account.karyawan.nip}</p>
                           )}
+                          <p className="text-xs text-gray-400 sm:hidden">{account.email}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-gray-600">{account.email}</span>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 hidden sm:table-cell">
+                      <span className="text-xs sm:text-sm text-gray-600">{account.email}</span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
                       <span
-                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(
+                        className={`inline-flex items-center px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(
                           account.role
                         )}`}
                       >
                         {getRoleLabel(account.role)}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-gray-600">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 hidden md:table-cell">
+                      <span className="text-xs sm:text-sm text-gray-600">
                         {account.karyawan?.jenis_karyawan?.nama_jenis || (
                           <span className="text-gray-400">-</span>
                         )}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
                       {account.need_password_reset ? (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100">
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100">
+                          <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                           </svg>
-                          Perlu Reset
+                          <span className="hidden sm:inline">Perlu Reset</span>
+                          <span className="sm:hidden">Reset</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+                        <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
                           <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
                           Aktif
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-gray-500">{formatDate(account.created_at)}</span>
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 hidden lg:table-cell">
+                      <span className="text-xs sm:text-sm text-gray-500">{formatDate(account.created_at)}</span>
                     </td>
                   </tr>
                 ))

@@ -520,37 +520,39 @@ export default function RiwayatAbsensiPage() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     NIP
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Nama Karyawan
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Nama
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Jenis Karyawan
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                    Jenis
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Hadir
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <span className="hidden sm:inline">Hadir</span>
+                    <span className="sm:hidden">H</span>
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                     Terlambat
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                     Izin
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                     Cuti
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Alpha
+                  <th className="px-3 sm:px-6 py-2 sm:py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <span className="hidden sm:inline">Alpha</span>
+                    <span className="sm:hidden">A</span>
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {rekapData.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
-                      <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <td colSpan={8} className="px-3 sm:px-6 py-8 sm:py-12 text-center text-gray-500">
+                      <svg className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                       </svg>
                       <p>Tidak ada data absensi untuk periode ini</p>
@@ -564,10 +566,10 @@ export default function RiwayatAbsensiPage() {
                         onClick={() => handleRowClick(item.karyawan_id)}
                         className="hover:bg-gray-50 cursor-pointer transition"
                       >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center gap-2">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                          <div className="flex items-center gap-1 sm:gap-2">
                             <svg
-                              className={`w-4 h-4 text-gray-400 transition-transform ${
+                              className={`w-3 h-3 sm:w-4 sm:h-4 text-gray-400 transition-transform ${
                                 expandedKaryawan === item.karyawan_id ? 'rotate-90' : ''
                               }`}
                               fill="none"
@@ -576,39 +578,40 @@ export default function RiwayatAbsensiPage() {
                             >
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>
-                            <span className="text-sm font-medium text-gray-900">{item.nip}</span>
+                            <span className="text-xs sm:text-sm font-medium text-gray-900">{item.nip}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm text-gray-900">{item.nama}</span>
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                          <span className="text-xs sm:text-sm text-gray-900">{item.nama}</span>
+                          <span className="block text-xs text-gray-400 md:hidden">{item.jenis_karyawan.nama}</span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap hidden md:table-cell">
+                          <span className="px-2 py-0.5 sm:py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">
                             {item.jenis_karyawan.nama}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-center">
-                          <span className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-center">
+                          <span className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 text-xs sm:text-sm font-semibold text-green-700 bg-green-100 rounded-full">
                             {item.rekap.hadir}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-center">
-                          <span className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-yellow-700 bg-yellow-100 rounded-full">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-center hidden sm:table-cell">
+                          <span className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 text-xs sm:text-sm font-semibold text-yellow-700 bg-yellow-100 rounded-full">
                             {item.rekap.terlambat}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-center">
-                          <span className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-blue-700 bg-blue-100 rounded-full">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-center hidden md:table-cell">
+                          <span className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 text-xs sm:text-sm font-semibold text-blue-700 bg-blue-100 rounded-full">
                             {item.rekap.izin}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-center">
-                          <span className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-purple-700 bg-purple-100 rounded-full">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-center hidden lg:table-cell">
+                          <span className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 text-xs sm:text-sm font-semibold text-purple-700 bg-purple-100 rounded-full">
                             {item.rekap.cuti}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-center">
-                          <span className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-red-700 bg-red-100 rounded-full">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-center">
+                          <span className="inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 text-xs sm:text-sm font-semibold text-red-700 bg-red-100 rounded-full">
                             {item.rekap.alpha}
                           </span>
                         </td>
@@ -617,13 +620,13 @@ export default function RiwayatAbsensiPage() {
                       {/* Detail Row (Expandable) */}
                       {expandedKaryawan === item.karyawan_id && (
                         <tr key={`${item.karyawan_id}-detail`}>
-                          <td colSpan={8} className="px-6 py-4 bg-gray-50">
-                            <div className="ml-6">
-                              <h4 className="text-sm font-semibold text-gray-700 mb-3">
-                                Detail Absensi Harian - {item.nama}
+                          <td colSpan={8} className="px-3 sm:px-6 py-3 sm:py-4 bg-gray-50">
+                            <div className="sm:ml-6">
+                              <h4 className="text-xs sm:text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
+                                Detail Absensi - {item.nama}
                               </h4>
                               {item.detail.length === 0 ? (
-                                <p className="text-sm text-gray-500 italic">
+                                <p className="text-xs sm:text-sm text-gray-500 italic">
                                   Tidak ada data absensi untuk karyawan ini pada periode ini
                                 </p>
                               ) : (
@@ -631,19 +634,19 @@ export default function RiwayatAbsensiPage() {
                                   <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
                                     <thead className="bg-gray-100">
                                       <tr>
-                                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                                        <th className="px-2 sm:px-4 py-1.5 sm:py-2 text-left text-xs font-medium text-gray-500 uppercase">
                                           Tanggal
                                         </th>
-                                        <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                                          Jam Masuk
+                                        <th className="px-2 sm:px-4 py-1.5 sm:py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                          Masuk
                                         </th>
-                                        <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">
-                                          Jam Pulang
+                                        <th className="px-2 sm:px-4 py-1.5 sm:py-2 text-center text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">
+                                          Pulang
                                         </th>
-                                        <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                        <th className="px-2 sm:px-4 py-1.5 sm:py-2 text-center text-xs font-medium text-gray-500 uppercase">
                                           Status
                                         </th>
-                                        <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                                        <th className="px-2 sm:px-4 py-1.5 sm:py-2 text-center text-xs font-medium text-gray-500 uppercase hidden md:table-cell">
                                           Foto
                                         </th>
                                       </tr>
@@ -651,26 +654,26 @@ export default function RiwayatAbsensiPage() {
                                     <tbody className="bg-white divide-y divide-gray-200">
                                       {item.detail.map((detail) => (
                                         <tr key={detail.id} className="hover:bg-gray-50">
-                                          <td className="px-4 py-2 text-sm text-gray-900">
+                                          <td className="px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-900">
                                             {formatTanggal(detail.tanggal)}
                                           </td>
-                                          <td className="px-4 py-2 text-sm text-gray-600 text-center">
+                                          <td className="px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-600 text-center">
                                             {detail.jam_masuk}
                                           </td>
-                                          <td className="px-4 py-2 text-sm text-gray-600 text-center">
+                                          <td className="px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-600 text-center hidden sm:table-cell">
                                             {detail.jam_pulang}
                                           </td>
-                                          <td className="px-4 py-2 text-center">
+                                          <td className="px-2 sm:px-4 py-1.5 sm:py-2 text-center">
                                             <span
-                                              className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(
+                                              className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full ${getStatusBadge(
                                                 detail.status
                                               )}`}
                                             >
                                               {detail.status}
                                             </span>
                                           </td>
-                                          <td className="px-4 py-2 text-center">
-                                            <div className="flex items-center justify-center gap-2">
+                                          <td className="px-2 sm:px-4 py-1.5 sm:py-2 text-center hidden md:table-cell">
+                                            <div className="flex items-center justify-center gap-1 sm:gap-2">
                                               {detail.foto_masuk ? (
                                                 <button
                                                   onClick={(e) => {

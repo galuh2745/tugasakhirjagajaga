@@ -192,32 +192,32 @@ export default function ResetRequestsPage() {
           {requests.map((request) => (
             <div
               key={request.id}
-              className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500"
+              className="bg-white rounded-lg shadow p-4 sm:p-6 border-l-4 border-yellow-500"
             >
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="flex-shrink-0 h-12 w-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                      <User className="h-6 w-6 text-yellow-600" />
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3">
+                    <div className="flex-shrink-0 h-10 w-10 sm:h-12 sm:w-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                      <User className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-600" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                         {request.name}
                       </h3>
-                      <p className="text-sm text-gray-600 flex items-center gap-1">
-                        <Mail className="h-4 w-4" />
+                      <p className="text-xs sm:text-sm text-gray-600 flex items-center gap-1">
+                        <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
                         {request.email}
                       </p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
                     <div>
                       <p className="text-xs text-gray-500 uppercase font-medium mb-1">
                         Data Karyawan
                       </p>
                       {request.karyawan ? (
-                        <div className="text-sm">
+                        <div className="text-xs sm:text-sm">
                           <p className="font-medium text-gray-900">
                             {request.karyawan.nama}
                           </p>
@@ -227,7 +227,7 @@ export default function ResetRequestsPage() {
                           </p>
                         </div>
                       ) : (
-                        <p className="text-sm text-gray-400">-</p>
+                        <p className="text-xs sm:text-sm text-gray-400">-</p>
                       )}
                     </div>
 
@@ -235,19 +235,19 @@ export default function ResetRequestsPage() {
                       <p className="text-xs text-gray-500 uppercase font-medium mb-1">
                         Waktu Permintaan
                       </p>
-                      <p className="text-sm text-gray-900 flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-gray-400" />
+                      <p className="text-xs sm:text-sm text-gray-900 flex items-center gap-2">
+                        <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
                         {formatDate(request.reset_requested_at)}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2 ml-4">
+                <div className="flex flex-row sm:flex-col gap-2 sm:ml-4">
                   <button
                     onClick={() => handleApprove(request)}
                     disabled={processing === request.id}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {processing === request.id ? (
                       <RefreshCw className="h-4 w-4 animate-spin" />
@@ -260,7 +260,7 @@ export default function ResetRequestsPage() {
                   <button
                     onClick={() => handleReject(request.id)}
                     disabled={processing === request.id}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {processing === request.id ? (
                       <RefreshCw className="h-4 w-4 animate-spin" />
