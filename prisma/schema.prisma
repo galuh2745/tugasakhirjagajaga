@@ -1,0 +1,150 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  OWNER
+  USER
+}
+
+enum StatusKaryawan {
+  AKTIF
+  NONAKTIF
+}
+
+enum StatusAbsensi {
+  HADIR
+  TERLAMBAT
+  ALPHA
+  IZIN
+  CUTI
+}
+
+enum JenisIzinCuti {
+  IZIN
+  CUTI
+  SAKIT
+}
+
+enum StatusIzinCuti {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id                   BigInt    @id @default(autoincrement())
+  name                 String    @db.VarChar(255)
+  email                String    @unique @db.VarChar(255)
+  password             String    @db.VarChar(255)
+  role                 Role      @default(USER)
+  need_password_reset  Boolean   @default(false)
+  reset_requested_at   DateTime?
+  created_at           DateTime  @default(now())
+  updated_at           DateTime  @updatedAt
+  
+  karyawan             Karyawan?
+
+  @@map("users")
+}
+
+model JenisKaryawan {
+  id                    BigInt     @id @default(autoincrement())
+  nama_jenis            String     @db.VarChar(255)
+  jam_masuk             DateTime   @db.Time
+  jam_pulang            DateTime   @db.Time
+  toleransi_terlambat   Int        @default(15) // dalam menit
+  created_at            DateTime   @default(now())
+  updated_at            DateTime   @updatedAt
+  
+  karyawan              Karyawan[]
+
+  @@map("jenis_karyawan")
+}
+
+model Karyawan {
+  id                 BigInt          @id @default(autoincrement())
+  user_id            BigInt          @unique
+  nip                String          @unique @db.VarChar(50)
+  nama               String          @db.VarChar(255)
+  jenis_karyawan_id  BigInt
+  no_hp              String          @db.VarChar(20)
+  alamat             String          @db.Text
+  status             StatusKaryawan  @default(AKTIF)
+  created_at         DateTime        @default(now())
+  updated_at         DateTime        @updatedAt
+  
+  user               User            @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  jenis_karyawan     JenisKaryawan   @relation(fields: [jenis_karyawan_id], references: [id])
+  absensi            Absensi[]
+  izin_cuti          IzinCuti[]
+  lembur             Lembur[]
+
+  @@index([user_id])
+  @@index([jenis_karyawan_id])
+  @@map("karyawan")
+}
+
+model Absensi {
+  id           BigInt         @id @default(autoincrement())
+  karyawan_id  BigInt
+  tanggal      DateTime       @db.Date
+  jam_masuk    DateTime?      @db.Time
+  jam_pulang   DateTime?      @db.Time
+  status       StatusAbsensi
+  latitude     Decimal?       @db.Decimal(10, 8)
+  longitude    Decimal?       @db.Decimal(11, 8)
+  foto_masuk   String?        @db.VarChar(500)
+  foto_pulang  String?        @db.VarChar(500)
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  
+  karyawan     Karyawan       @relation(fields: [karyawan_id], references: [id], onDelete: Cascade)
+
+  @@index([karyawan_id])
+  @@index([tanggal])
+  @@map("absensi")
+}
+
+model IzinCuti {
+  id               BigInt          @id @default(autoincrement())
+  karyawan_id      BigInt
+  jenis            JenisIzinCuti
+  tanggal_mulai    DateTime        @db.Date
+  tanggal_selesai  DateTime        @db.Date
+  alasan           String          @db.Text
+  status           StatusIzinCuti  @default(PENDING)
+  created_at       DateTime        @default(now())
+  updated_at       DateTime        @updatedAt
+  
+  karyawan         Karyawan        @relation(fields: [karyawan_id], references: [id], onDelete: Cascade)
+
+  @@index([karyawan_id])
+  @@map("izin_cuti")
+}
+
+model Lembur {
+  id          BigInt    @id @default(autoincrement())
+  karyawan_id BigInt
+  tanggal     DateTime  @db.Date
+  jam_mulai   DateTime  @db.Time
+  jam_selesai DateTime  @db.Time
+  total_jam   Decimal   @db.Decimal(4, 2)
+  keterangan  String    @db.Text
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  
+  karyawan    Karyawan  @relation(fields: [karyawan_id], references: [id], onDelete: Cascade)
+
+  @@index([karyawan_id])
+  @@map("lembur")
+}
