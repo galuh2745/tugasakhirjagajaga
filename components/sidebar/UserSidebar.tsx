@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 
 interface UserInfo {
@@ -104,10 +105,14 @@ export default function UserSidebar() {
       <div className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40">
         <div className="flex items-center justify-between px-4 h-16">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
+            <div className="w-8 h-8 rounded-lg overflow-hidden bg-black flex items-center justify-center">
+              <Image
+                src="/images/logo/logocv.jpg"
+                alt="CV Aswi Sentosa Logo"
+                width={32}
+                height={32}
+                className="object-contain"
+              />
             </div>
             <span className="font-semibold text-gray-800">Absensi Karyawan</span>
           </div>
@@ -143,10 +148,14 @@ export default function UserSidebar() {
           {/* Logo */}
           <div className="p-5 border-b border-gray-100">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/20">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
+              <div className="w-10 h-10 rounded-xl overflow-hidden bg-black flex items-center justify-center shadow-lg">
+                <Image
+                  src="/images/logo/logocv.jpg"
+                  alt="CV Aswi Sentosa Logo"
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                />
               </div>
               <div>
                 <h1 className="font-bold text-gray-800">CV Aswi Sentosa</h1>

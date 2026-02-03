@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { SidebarMenu } from './SidebarMenu';
 import { MenuItem } from './types';
 import {
@@ -247,13 +248,25 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ className = '' }) =>
       {/* Header / Logo */}
       <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} p-4 border-b border-gray-200`}>
         {isCollapsed ? (
-          <div className="w-10 h-10 bg-linear-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">AS</span>
+          <div className="w-10 h-10 rounded-lg overflow-hidden bg-black flex items-center justify-center">
+            <Image
+              src="/images/logo/logocv.jpg"
+              alt="CV Aswi Sentosa Logo"
+              width={40}
+              height={40}
+              className="object-contain"
+            />
           </div>
         ) : (
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-linear-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">AS</span>
+            <div className="w-10 h-10 rounded-lg overflow-hidden bg-black flex items-center justify-center">
+              <Image
+                src="/images/logo/logocv.jpg"
+                alt="CV Aswi Sentosa Logo"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
             </div>
             <div>
               <h1 className="text-sm font-bold text-gray-900 leading-tight">CV Aswi Sentosa</h1>
