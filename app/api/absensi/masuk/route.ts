@@ -187,11 +187,16 @@ export async function POST(req: Request) {
     // Proses foto dengan watermark
     const photoBuffer = Buffer.from(await photo.arrayBuffer());
     
-    // Dapatkan metadata gambar
-    const metadata = await sharp(photoBuffer).metadata();
+    // Resize foto terlebih dahulu
+    const resizedPhoto = await sharp(photoBuffer)
+      .resize(800, 600, { fit: 'inside', withoutEnlargement: true })
+      .toBuffer();
+    
+    // Dapatkan metadata gambar SETELAH resize
+    const metadata = await sharp(resizedPhoto).metadata();
     const imgWidth = metadata.width || 800;
     
-    // Buat watermark SVG
+    // Buat watermark SVG dengan ukuran yang sesuai
     const watermarkSvg = createWatermarkSvg(
       karyawan.nama,
       formatDateTime(currentTime),
@@ -200,10 +205,9 @@ export async function POST(req: Request) {
       Math.min(imgWidth - 20, 400)
     );
     
-    // Composite watermark ke foto
+    // Composite watermark ke foto yang sudah di-resize
     const watermarkBuffer = Buffer.from(watermarkSvg);
-    const processedPhoto = await sharp(photoBuffer)
-      .resize(800, 600, { fit: 'inside', withoutEnlargement: true })
+    const processedPhoto = await sharp(resizedPhoto)
       .composite([
         {
           input: watermarkBuffer,
@@ -211,7 +215,7 @@ export async function POST(req: Request) {
           blend: 'over'
         }
       ])
-      .jpeg({ quality: 85 })
+      .jpeg({ quality: 100 })
       .toBuffer();
 
     // Simpan foto ke folder lokal
