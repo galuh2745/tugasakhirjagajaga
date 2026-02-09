@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { ChevronsLeft } from 'lucide-react';
 import { SidebarMenu } from './SidebarMenu';
 import { MenuItem } from './types';
 import {
@@ -29,6 +30,9 @@ import {
   TrendingDownIcon,
   ChartIcon,
   FileTextIcon,
+  SkullIcon,
+  OfficeBuildingIcon,
+  WarehouseIcon,
 } from './icons';
 
 // Menu configuration for Admin Sidebar (will be updated with dynamic badge)
@@ -89,26 +93,55 @@ const getAdminMenuItems = (pendingCount: number = 0, resetRequestsCount: number 
     id: 'inventory',
     label: 'Inventory',
     icon: <BoxIcon />,
-    isDisabled: true,
-    badge: 'Coming Soon',
     children: [
       {
-        id: 'stok-barang',
-        label: 'Stok Barang',
+        id: 'master-perusahaan',
+        label: 'Master Perusahaan',
+        href: '/dashboard/admin/inventory/perusahaan',
+        icon: <OfficeBuildingIcon className="w-4 h-4" />,
+      },
+      {
+        id: 'jenis-daging',
+        label: 'Master Jenis Daging',
+        href: '/dashboard/admin/inventory/jenis-daging',
         icon: <BoxIcon className="w-4 h-4" />,
-        isDisabled: true,
       },
       {
         id: 'barang-masuk',
         label: 'Barang Masuk',
+        href: '/dashboard/admin/inventory/barang-masuk',
         icon: <InboxInIcon className="w-4 h-4" />,
-        isDisabled: true,
+      },
+      {
+        id: 'ayam-mati',
+        label: 'Ayam Mati',
+        href: '/dashboard/admin/inventory/ayam-mati',
+        icon: <SkullIcon className="w-4 h-4" />,
       },
       {
         id: 'barang-keluar',
         label: 'Barang Keluar',
         icon: <InboxOutIcon className="w-4 h-4" />,
-        isDisabled: true,
+        children: [
+          {
+            id: 'ayam-hidup',
+            label: 'Ayam Hidup',
+            href: '/dashboard/admin/inventory/barang-keluar/ayam-hidup',
+            icon: <TruckIcon className="w-4 h-4" />,
+          },
+          {
+            id: 'daging-ayam',
+            label: 'Daging Ayam',
+            href: '/dashboard/admin/inventory/barang-keluar/daging',
+            icon: <BoxIcon className="w-4 h-4" />,
+          },
+        ],
+      },
+      {
+        id: 'stok-ayam',
+        label: 'Stok Ayam',
+        href: '/dashboard/admin/inventory/stok',
+        icon: <WarehouseIcon className="w-4 h-4" />,
       },
     ],
   },
@@ -116,28 +149,7 @@ const getAdminMenuItems = (pendingCount: number = 0, resetRequestsCount: number 
     id: 'keuangan',
     label: 'Keuangan',
     icon: <CurrencyIcon />,
-    isDisabled: true,
-    badge: 'Coming Soon',
-    children: [
-      {
-        id: 'pemasukan',
-        label: 'Pemasukan',
-        icon: <TrendingUpIcon className="w-4 h-4" />,
-        isDisabled: true,
-      },
-      {
-        id: 'pengeluaran',
-        label: 'Pengeluaran',
-        icon: <TrendingDownIcon className="w-4 h-4" />,
-        isDisabled: true,
-      },
-      {
-        id: 'laporan-keuangan',
-        label: 'Laporan Keuangan',
-        icon: <ChartIcon className="w-4 h-4" />,
-        isDisabled: true,
-      },
-    ],
+    href: '/dashboard/admin/keuangan',
   },
 ];
 
@@ -315,14 +327,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ className = '' }) =>
           className="w-full p-2 rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 text-gray-500 hover:text-gray-700"
           title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
-          <svg 
-            className={`w-5 h-5 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`} 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-          </svg>
+          <ChevronsLeft className={`w-5 h-5 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`} />
           {!isCollapsed && <span className="text-sm">Tutup</span>}
         </button>
       </div>

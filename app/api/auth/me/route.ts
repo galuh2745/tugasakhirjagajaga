@@ -40,7 +40,6 @@ export async function GET(request: NextRequest) {
       select: {
         id: true,
         name: true,
-        email: true,
         role: true,
         created_at: true,
         karyawan: {
@@ -87,7 +86,6 @@ export async function GET(request: NextRequest) {
         user: {
           id: user.id.toString(),
           name: user.name,
-          email: user.email,
           role: user.role,
           created_at: user.created_at,
           karyawan: user.karyawan ? {

@@ -52,7 +52,6 @@ export async function GET(req: Request) {
       whereClause.OR = [
         { nama: { contains: search } },
         { nip: { contains: search } },
-        { user: { email: { contains: search } } }
       ];
     }
 
@@ -62,7 +61,6 @@ export async function GET(req: Request) {
         user: {
           select: {
             id: true,
-            email: true,
             role: true,
           }
         },
@@ -84,7 +82,6 @@ export async function GET(req: Request) {
       user_id: k.user_id.toString(),
       nip: k.nip,
       nama: k.nama,
-      email: k.user.email,
       no_hp: k.no_hp,
       alamat: k.alamat,
       status: k.status,
@@ -119,7 +116,6 @@ export async function POST(req: Request) {
     const { 
       nama, 
       nip, 
-      email, 
       password, 
       jenis_karyawan_id, 
       no_hp, 
@@ -128,17 +124,11 @@ export async function POST(req: Request) {
     } = await req.json();
 
     // Validasi input
-    if (!nama || !nip || !email || !password || !jenis_karyawan_id || !no_hp || !alamat) {
+    if (!nama || !nip || !password || !jenis_karyawan_id || !no_hp || !alamat) {
       return NextResponse.json({ 
         success: false, 
-        error: 'Semua field wajib diisi: nama, nip, email, password, jenis_karyawan_id, no_hp, alamat' 
+        error: 'Semua field wajib diisi: nama, nip, password, jenis_karyawan_id, no_hp, alamat' 
       }, { status: 400 });
-    }
-
-    // Validasi email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ success: false, error: 'Format email tidak valid' }, { status: 400 });
     }
 
     // Validasi password minimal 6 karakter
@@ -146,14 +136,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Password minimal 6 karakter' }, { status: 400 });
     }
 
-    // Cek apakah email sudah terdaftar
-    const existingEmail = await prisma.user.findUnique({
-      where: { email: email.toLowerCase().trim() }
-    });
-
-    if (existingEmail) {
-      return NextResponse.json({ success: false, error: 'Email sudah terdaftar' }, { status: 400 });
-    }
+    // Cek apakah email sudah terdaftar - REMOVED (login via NIP now)
 
     // Cek apakah NIP sudah terdaftar
     const existingNip = await prisma.karyawan.findUnique({
@@ -182,7 +165,6 @@ export async function POST(req: Request) {
       const newUser = await tx.user.create({
         data: {
           name: nama.trim(),
-          email: email.toLowerCase().trim(),
           password: hashedPassword,
           role: 'USER',
         }
@@ -201,9 +183,6 @@ export async function POST(req: Request) {
         },
         include: {
           jenis_karyawan: true,
-          user: {
-            select: { email: true }
-          }
         }
       });
 
@@ -217,7 +196,6 @@ export async function POST(req: Request) {
         id: result.id.toString(),
         nama: result.nama,
         nip: result.nip,
-        email: result.user.email,
         jenis_karyawan: result.jenis_karyawan.nama_jenis,
       }
     });
@@ -239,7 +217,6 @@ export async function PUT(req: Request) {
       id, 
       nama, 
       nip, 
-      email, 
       password, 
       jenis_karyawan_id, 
       no_hp, 
@@ -275,21 +252,12 @@ export async function PUT(req: Request) {
       }
     }
 
-    // Cek duplikat email (kecuali dirinya sendiri)
-    if (email) {
-      const duplicateEmail = await prisma.user.findFirst({
-        where: { 
-          email: email.toLowerCase().trim(),
-          NOT: { id: existing.user_id }
-        }
-      });
-
-      if (duplicateEmail) {
-        return NextResponse.json({ success: false, error: 'Email sudah digunakan' }, { status: 400 });
-      }
+    // Siapkan data update user
+    const userUpdate: any = {};
+    if (nama) userUpdate.name = nama.trim();
+    if (password && password.length >= 6) {
+      userUpdate.password = await bcrypt.hash(password, 10);
     }
-
-    // Siapkan data update karyawan
     const karyawanUpdate: any = {};
     if (nama) karyawanUpdate.nama = nama.trim();
     if (nip) karyawanUpdate.nip = nip.trim();
@@ -297,14 +265,6 @@ export async function PUT(req: Request) {
     if (no_hp) karyawanUpdate.no_hp = no_hp.trim();
     if (alamat) karyawanUpdate.alamat = alamat.trim();
     if (status) karyawanUpdate.status = status;
-
-    // Siapkan data update user
-    const userUpdate: any = {};
-    if (nama) userUpdate.name = nama.trim();
-    if (email) userUpdate.email = email.toLowerCase().trim();
-    if (password && password.length >= 6) {
-      userUpdate.password = await bcrypt.hash(password, 10);
-    }
 
     // Update dengan transaction
     const result = await prisma.$transaction(async (tx) => {
@@ -322,7 +282,6 @@ export async function PUT(req: Request) {
         data: karyawanUpdate,
         include: {
           jenis_karyawan: true,
-          user: { select: { email: true } }
         }
       });
 
@@ -336,7 +295,6 @@ export async function PUT(req: Request) {
         id: result.id.toString(),
         nama: result.nama,
         nip: result.nip,
-        email: result.user.email,
       }
     });
   } catch (error) {

@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
     // Get user
     const user = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { id: Number(userId) },
       select: { id: true, password: true },
     });
 
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
 
     // Update password
     await prisma.user.update({
-      where: { id: userId },
+      where: { id: Number(userId) },
       data: {
         password: hashedPassword,
       },

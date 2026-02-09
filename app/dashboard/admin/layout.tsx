@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { AdminSidebar } from '@/components/sidebar';
+import { PageTransition } from '@/components/ui/page-transition';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -9,7 +10,7 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
       <AdminSidebar />
 
@@ -20,7 +21,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         
         {/* Content */}
         <div className="p-4 lg:p-6">
-          {children}
+          <PageTransition>{children}</PageTransition>
         </div>
       </main>
     </div>

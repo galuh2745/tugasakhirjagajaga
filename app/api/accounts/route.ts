@@ -31,7 +31,6 @@ export async function GET() {
       select: {
         id: true,
         name: true,
-        email: true,
         role: true,
         need_password_reset: true,
         reset_requested_at: true,

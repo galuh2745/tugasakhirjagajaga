@@ -5,31 +5,31 @@ import { prisma } from '@/lib/prisma';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { email } = body;
+    const { nip } = body;
 
-    if (!email) {
+    if (!nip) {
       return NextResponse.json(
-        { error: 'Email harus diisi' },
+        { error: 'NIP harus diisi' },
         { status: 400 }
       );
     }
 
-    // Find user by email
-    const user = await prisma.user.findUnique({
-      where: { email },
-      select: { id: true, name: true },
+    // Find karyawan by NIP
+    const karyawan = await prisma.karyawan.findUnique({
+      where: { nip: nip.trim() },
+      select: { user_id: true },
     });
 
-    if (!user) {
+    if (!karyawan) {
       return NextResponse.json(
-        { error: 'Email tidak ditemukan di sistem' },
+        { error: 'NIP tidak ditemukan di sistem' },
         { status: 404 }
       );
     }
 
     // Update user to request password reset
     await prisma.user.update({
-      where: { id: user.id },
+      where: { id: karyawan.user_id },
       data: {
         need_password_reset: true,
         reset_requested_at: new Date(),

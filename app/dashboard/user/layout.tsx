@@ -2,6 +2,7 @@
 
 import React from 'react';
 import UserSidebar from '@/components/sidebar/UserSidebar';
+import { PageTransition } from '@/components/ui/page-transition';
 
 interface UserLayoutProps {
   children: React.ReactNode;
@@ -9,7 +10,7 @@ interface UserLayoutProps {
 
 export default function UserLayout({ children }: UserLayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
       <UserSidebar />
 
@@ -20,7 +21,7 @@ export default function UserLayout({ children }: UserLayoutProps) {
         
         {/* Content */}
         <div className="p-4 lg:p-6">
-          {children}
+          <PageTransition>{children}</PageTransition>
         </div>
       </main>
     </div>

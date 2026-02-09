@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     // Update user to request password reset
     await prisma.user.update({
-      where: { id: userId },
+      where: { id: Number(userId) },
       data: {
         need_password_reset: true,
         reset_requested_at: new Date(),

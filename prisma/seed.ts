@@ -360,6 +360,60 @@ async function main() {
     console.log(`  ✅ ${data.nip} - ${data.nama} (${data.status})`);
   }
 
+  // ========================================
+  // SEED INVENTORY DATA
+  // ========================================
+  console.log('\n🏢 Seeding Perusahaan...');
+  
+  const perusahaanData = [
+    { nama_perusahaan: 'PT Ayam Sentosa Jaya', alamat: 'Jl. Raya Sentosa No. 123, Surabaya', kontak: '031-1234567' },
+    { nama_perusahaan: 'CV Mandiri Poultry', alamat: 'Jl. Industri No. 45, Sidoarjo', kontak: '031-7654321' },
+    { nama_perusahaan: 'UD Berkah Unggas', alamat: 'Jl. Pasar Baru No. 78, Gresik', kontak: '031-9876543' },
+  ];
+
+  for (const data of perusahaanData) {
+    await prisma.perusahaan.upsert({
+      where: { id: BigInt(perusahaanData.indexOf(data) + 1) },
+      update: {},
+      create: {
+        nama_perusahaan: data.nama_perusahaan,
+        alamat: data.alamat,
+        kontak: data.kontak,
+      },
+    });
+    console.log(`  ✅ ${data.nama_perusahaan}`);
+  }
+
+  console.log('\n🍗 Seeding Jenis Daging...');
+  
+  const jenisDagingData = [
+    'Ceker',
+    'Ceker Kepala',
+    'Daging Besar',
+    'Daging Kecil',
+    'Sayap',
+    'Paha Pentung',
+    'Ati Besar',
+    'Ati Kecil',
+    'Tetelan',
+    'Kulit Tulang',
+    'Kepala',
+    'Usus',
+    'Hati Ampela',
+  ];
+
+  for (let i = 0; i < jenisDagingData.length; i++) {
+    await prisma.jenisDaging.upsert({
+      where: { id: BigInt(i + 1) },
+      update: {},
+      create: {
+        nama_jenis: jenisDagingData[i],
+        aktif: true,
+      },
+    });
+    console.log(`  ✅ ${jenisDagingData[i]}`);
+  }
+
   console.log('\n🎉 Seeding selesai!');
   console.log('\n📊 Summary:');
   console.log(`  - JenisKaryawan: 3 types`);
@@ -368,6 +422,8 @@ async function main() {
   console.log(`    • Driver: 5 orang (4 aktif, 1 nonaktif)`);
   console.log(`    • Karyawan Tetap: 8 orang (7 aktif, 1 nonaktif)`);
   console.log(`    • Harian: 10 orang (8 aktif, 2 nonaktif)`);
+  console.log(`  - Perusahaan: ${perusahaanData.length} perusahaan`);
+  console.log(`  - Jenis Daging: ${jenisDagingData.length} jenis`);
   console.log('\n🔑 Default password untuk semua user: password123');
 }
 

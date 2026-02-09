@@ -43,13 +43,117 @@ function formatDateTime(date: Date): string {
   return `${day}-${month}-${year} ${hours}:${minutes}`;
 }
 
+// HERE Maps API Key (opsional, jika ada akan digunakan untuk geocoding lebih akurat)
+const HERE_API_KEY = process.env.HERE_API_KEY || '';
+
+// Fungsi reverse geocoding - HERE Maps (primary) + Nominatim (fallback)
+async function reverseGeocode(latitude: number, longitude: number): Promise<string> {
+  // Coba HERE Maps Geocoding API dulu jika API key tersedia
+  if (HERE_API_KEY) {
+    try {
+      const hRes = await fetch(
+        `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${latitude},${longitude}&lang=id&apiKey=${HERE_API_KEY}`,
+        { signal: AbortSignal.timeout(5000) }
+      );
+      if (hRes.ok) {
+        const hData = await hRes.json();
+        if (hData.items?.length > 0) {
+          const label = (hData.items[0].address?.label || '')
+            .replace(/,\s*Indonesia$/i, '')
+            .trim();
+          if (label) return label;
+        }
+      }
+    } catch (err) {
+      console.error('HERE geocoding error, fallback to Nominatim:', err);
+    }
+  }
+
+  // Fallback: Nominatim (OpenStreetMap)
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1&accept-language=id&zoom=18`,
+      {
+        headers: { 'User-Agent': 'AbsensiApp/1.0' },
+        signal: AbortSignal.timeout(5000),
+      }
+    );
+
+    if (!res.ok) throw new Error('Nominatim request failed');
+
+    const data = await res.json();
+    const addr = data.address || {};
+    const displayName = data.display_name || '';
+
+    if (displayName) {
+      const cleaned = displayName
+        .replace(/,\s*(Indonesia)$/i, '')
+        .replace(/,\s*(Sumatra|Sumatera)\s*,?/i, '')
+        .replace(/,\s*,/g, ',')
+        .replace(/,\s*$/g, '')
+        .trim();
+      if (cleaned) return cleaned;
+    }
+
+    const jalan = addr.road || '';
+    const nomor = addr.house_number || '';
+    const desa = addr.village || addr.suburb || addr.neighbourhood || '';
+    const lingkungan = addr.hamlet || addr.residential || '';
+    const kecamatan = addr.city_district || addr.county || '';
+    const kabupaten = addr.city || addr.town || addr.municipality || '';
+    const provinsi = addr.state || '';
+    const kodepos = addr.postcode || '';
+
+    const jalanLengkap = [jalan, nomor].filter(Boolean).join(' ');
+    const parts = [jalanLengkap, lingkungan, desa, kecamatan, kabupaten, provinsi].filter(Boolean);
+    const result = parts.length > 0 ? parts.join(', ') : `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+    return kodepos ? `${result} ${kodepos}` : result;
+  } catch (err) {
+    console.error('Reverse geocoding error:', err);
+    return `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+  }
+}
+
+// Fungsi untuk escape XML special characters
+function escapeXml(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+}
+
 // Fungsi untuk membuat watermark SVG
-function createWatermarkSvg(nama: string, waktu: string, latitude: number, longitude: number, width: number): string {
+function createWatermarkSvg(nama: string, waktu: string, lokasi: string, width: number): string {
   const padding = 15;
-  const lineHeight = 24;
-  const boxHeight = lineHeight * 3 + padding * 2 + 10;
-  const fontSize = 16;
+  const fontSize = 14;
+  const lineHeight = 22;
   
+  // Potong lokasi jika terlalu panjang, buat multi-line
+  const maxCharsPerLine = Math.floor((width - padding * 2) / (fontSize * 0.55));
+  const lokasiLines: string[] = [];
+  let remaining = lokasi;
+  while (remaining.length > 0) {
+    if (remaining.length <= maxCharsPerLine) {
+      lokasiLines.push(remaining);
+      break;
+    }
+    // Cari posisi koma terdekat sebelum maxCharsPerLine
+    let cutIndex = remaining.lastIndexOf(',', maxCharsPerLine);
+    if (cutIndex <= 0) cutIndex = maxCharsPerLine;
+    lokasiLines.push(remaining.substring(0, cutIndex + 1).trim());
+    remaining = remaining.substring(cutIndex + 1).trim();
+  }
+
+  const totalLines = 2 + lokasiLines.length; // Nama + Waktu + lokasi lines
+  const boxHeight = lineHeight * totalLines + padding * 2 + 10;
+  
+  let lokasiSvg = '';
+  lokasiLines.forEach((line, i) => {
+    const y = padding + lineHeight * (3 + i);
+    if (i === 0) {
+      lokasiSvg += `<text x="${padding}" y="${y}" font-family="Arial, sans-serif" font-size="${fontSize}" fill="white" filter="url(#shadow)"><tspan font-weight="bold">Lokasi:</tspan> ${escapeXml(line)}</text>`;
+    } else {
+      lokasiSvg += `<text x="${padding + 56}" y="${y}" font-family="Arial, sans-serif" font-size="${fontSize}" fill="white" filter="url(#shadow)">${escapeXml(line)}</text>`;
+    }
+  });
+
   return `
     <svg width="${width}" height="${boxHeight}">
       <defs>
@@ -59,14 +163,12 @@ function createWatermarkSvg(nama: string, waktu: string, latitude: number, longi
       </defs>
       <rect x="0" y="0" width="${width}" height="${boxHeight}" fill="rgba(0,0,0,0.6)" rx="8"/>
       <text x="${padding}" y="${padding + lineHeight}" font-family="Arial, sans-serif" font-size="${fontSize}" fill="white" filter="url(#shadow)">
-        <tspan font-weight="bold">Nama:</tspan> ${nama}
+        <tspan font-weight="bold">Nama:</tspan> ${escapeXml(nama)}
       </text>
       <text x="${padding}" y="${padding + lineHeight * 2}" font-family="Arial, sans-serif" font-size="${fontSize}" fill="white" filter="url(#shadow)">
-        <tspan font-weight="bold">Waktu:</tspan> ${waktu}
+        <tspan font-weight="bold">Waktu:</tspan> ${escapeXml(waktu)}
       </text>
-      <text x="${padding}" y="${padding + lineHeight * 3}" font-family="Arial, sans-serif" font-size="${fontSize}" fill="white" filter="url(#shadow)">
-        <tspan font-weight="bold">Lokasi:</tspan> ${latitude.toFixed(6)}, ${longitude.toFixed(6)}
-      </text>
+      ${lokasiSvg}
     </svg>
   `;
 }
@@ -196,13 +298,15 @@ export async function POST(req: Request) {
     const metadata = await sharp(resizedPhoto).metadata();
     const imgWidth = metadata.width || 800;
     
+    // Reverse geocode koordinat ke deskripsi alamat
+    const lokasiDeskripsi = await reverseGeocode(latitude, longitude);
+
     // Buat watermark SVG dengan ukuran yang sesuai
     const watermarkSvg = createWatermarkSvg(
       karyawan.nama,
       formatDateTime(currentTime),
-      latitude,
-      longitude,
-      Math.min(imgWidth - 20, 400)
+      lokasiDeskripsi,
+      Math.min(imgWidth - 20, 450)
     );
     
     // Composite watermark ke foto yang sudah di-resize

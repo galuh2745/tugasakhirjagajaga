@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
 
     // Update user password and reset flags
     await prisma.user.update({
-      where: { id: userId },
+      where: { id: Number(userId) },
       data: {
         password: hashedPassword,
         need_password_reset: false,

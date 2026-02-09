@@ -1,0 +1,238 @@
+import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { prisma } from '@/lib/prisma';
+import { jwtVerify } from 'jose';
+
+async function validateAdmin() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('auth-token')?.value;
+
+  if (!token) {
+    return { error: 'Unauthorized', status: 401 };
+  }
+
+  const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
+  const { payload } = await jwtVerify(token, secret);
+  const { role } = payload as { userId: number; role: string };
+
+  if (role !== 'ADMIN' && role !== 'OWNER') {
+    return { error: 'Forbidden - Hanya admin yang dapat mengakses', status: 403 };
+  }
+
+  return { role };
+}
+
+// GET /api/keuangan/bulanan?month=YYYY-MM
+export async function GET(req: Request) {
+  try {
+    const validation = await validateAdmin();
+    if ('error' in validation) {
+      return NextResponse.json({ success: false, error: validation.error }, { status: validation.status });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const monthParam = searchParams.get('month');
+
+    if (!monthParam || !/^\d{4}-\d{2}$/.test(monthParam)) {
+      return NextResponse.json(
+        { success: false, error: 'Parameter month wajib diisi dengan format YYYY-MM' },
+        { status: 400 }
+      );
+    }
+
+    const [year, month] = monthParam.split('-').map(Number);
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 1); // First day of next month
+
+    // ==================== PEMASUKAN ====================
+
+    const penjualanDaging = await prisma.barangKeluarDaging.aggregate({
+      where: {
+        tanggal: { gte: startDate, lt: endDate },
+      },
+      _sum: { saldo: true },
+    });
+
+    const penjualanAyamHidup = await prisma.barangKeluarAyamHidup.aggregate({
+      where: {
+        tanggal: { gte: startDate, lt: endDate },
+      },
+      _sum: { total_penjualan: true },
+    });
+
+    const totalPenjualanDaging = parseFloat(penjualanDaging._sum.saldo?.toString() || '0');
+    const totalPenjualanAyamHidup = parseFloat(penjualanAyamHidup._sum.total_penjualan?.toString() || '0');
+    const totalPemasukan = totalPenjualanDaging + totalPenjualanAyamHidup;
+
+    // ==================== PENGELUARAN ====================
+
+    const beliAyam = await prisma.barangMasuk.aggregate({
+      where: {
+        tanggal_masuk: { gte: startDate, lt: endDate },
+      },
+      _sum: { total_harga: true },
+    });
+
+    const pengeluaranDaging = await prisma.barangKeluarDaging.aggregate({
+      where: {
+        tanggal: { gte: startDate, lt: endDate },
+      },
+      _sum: { pengeluaran: true },
+    });
+
+    const pengeluaranAyamHidup = await prisma.barangKeluarAyamHidup.aggregate({
+      where: {
+        tanggal: { gte: startDate, lt: endDate },
+      },
+      _sum: { pengeluaran: true },
+    });
+
+    // Ayam Mati TIDAK BISA CLAIM
+    const ayamMatiTidakBisaClaim = await prisma.ayamMati.findMany({
+      where: {
+        tanggal: { gte: startDate, lt: endDate },
+        status_claim: 'TIDAK_BISA',
+      },
+    });
+
+    let totalKerugianAyamMati = 0;
+    for (const am of ayamMatiTidakBisaClaim) {
+      const barangMasukRef = await prisma.barangMasuk.findFirst({
+        where: {
+          perusahaan_id: am.perusahaan_id,
+          tanggal_masuk: { lte: am.tanggal },
+        },
+        orderBy: { tanggal_masuk: 'desc' },
+      });
+
+      if (barangMasukRef) {
+        const totalKg = parseFloat(barangMasukRef.total_kg.toString());
+        const jumlahEkor = barangMasukRef.jumlah_ekor;
+        const hargaPerKg = parseFloat(barangMasukRef.harga_per_kg.toString());
+        const bw = jumlahEkor > 0 ? totalKg / jumlahEkor : 0;
+        const nilaiPerEkor = bw * hargaPerKg;
+        totalKerugianAyamMati += am.jumlah_ekor * nilaiPerEkor;
+      }
+    }
+
+    const totalBeliAyam = parseFloat(beliAyam._sum.total_harga?.toString() || '0');
+    const totalPengeluaranDaging = parseFloat(pengeluaranDaging._sum.pengeluaran?.toString() || '0');
+    const totalPengeluaranAyamHidup = parseFloat(pengeluaranAyamHidup._sum.pengeluaran?.toString() || '0');
+
+    const totalPengeluaran =
+      totalBeliAyam + totalPengeluaranDaging + totalPengeluaranAyamHidup + totalKerugianAyamMati;
+
+    const saldoBulanan = totalPemasukan - totalPengeluaran;
+
+    // ==================== REKAP HARIAN ====================
+    // Generate daily breakdown for the month
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const rekapHarian = [];
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayStart = new Date(year, month - 1, day);
+      const dayEnd = new Date(year, month - 1, day + 1);
+
+      // Only calculate for dates up to today
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+      if (dayStart > today) break;
+
+      const [dagingDay, ayamHidupDay, beliDay, penDagingDay, penAyamHidupDay] = await Promise.all([
+        prisma.barangKeluarDaging.aggregate({
+          where: { tanggal: { gte: dayStart, lt: dayEnd } },
+          _sum: { saldo: true },
+        }),
+        prisma.barangKeluarAyamHidup.aggregate({
+          where: { tanggal: { gte: dayStart, lt: dayEnd } },
+          _sum: { total_penjualan: true },
+        }),
+        prisma.barangMasuk.aggregate({
+          where: { tanggal_masuk: { gte: dayStart, lt: dayEnd } },
+          _sum: { total_harga: true },
+        }),
+        prisma.barangKeluarDaging.aggregate({
+          where: { tanggal: { gte: dayStart, lt: dayEnd } },
+          _sum: { pengeluaran: true },
+        }),
+        prisma.barangKeluarAyamHidup.aggregate({
+          where: { tanggal: { gte: dayStart, lt: dayEnd } },
+          _sum: { pengeluaran: true },
+        }),
+      ]);
+
+      // Ayam mati per hari
+      const ayamMatiDay = await prisma.ayamMati.findMany({
+        where: {
+          tanggal: { gte: dayStart, lt: dayEnd },
+          status_claim: 'TIDAK_BISA',
+        },
+      });
+
+      let kerugianDay = 0;
+      for (const am of ayamMatiDay) {
+        const ref = await prisma.barangMasuk.findFirst({
+          where: {
+            perusahaan_id: am.perusahaan_id,
+            tanggal_masuk: { lte: am.tanggal },
+          },
+          orderBy: { tanggal_masuk: 'desc' },
+        });
+        if (ref) {
+          const bw = ref.jumlah_ekor > 0 ? parseFloat(ref.total_kg.toString()) / ref.jumlah_ekor : 0;
+          kerugianDay += am.jumlah_ekor * bw * parseFloat(ref.harga_per_kg.toString());
+        }
+      }
+
+      const pemasukanDay =
+        parseFloat(dagingDay._sum.saldo?.toString() || '0') +
+        parseFloat(ayamHidupDay._sum.total_penjualan?.toString() || '0');
+
+      const pengeluaranDay =
+        parseFloat(beliDay._sum.total_harga?.toString() || '0') +
+        parseFloat(penDagingDay._sum.pengeluaran?.toString() || '0') +
+        parseFloat(penAyamHidupDay._sum.pengeluaran?.toString() || '0') +
+        kerugianDay;
+
+      const saldoDay = pemasukanDay - pengeluaranDay;
+
+      // Only include days that have data
+      if (pemasukanDay !== 0 || pengeluaranDay !== 0) {
+        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        rekapHarian.push({
+          tanggal: dateStr,
+          pemasukan: pemasukanDay,
+          pengeluaran: pengeluaranDay,
+          saldo: saldoDay,
+        });
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        bulan: monthParam,
+        pemasukan: {
+          penjualan_daging: totalPenjualanDaging,
+          penjualan_ayam_hidup: totalPenjualanAyamHidup,
+          total: totalPemasukan,
+        },
+        pengeluaran: {
+          beli_ayam: totalBeliAyam,
+          operasional_daging: totalPengeluaranDaging,
+          operasional_ayam_hidup: totalPengeluaranAyamHidup,
+          kerugian_ayam_mati: totalKerugianAyamMati,
+          total: totalPengeluaran,
+        },
+        saldo_bulanan: saldoBulanan,
+        rekap_harian: rekapHarian,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching keuangan bulanan:', error);
+    return NextResponse.json(
+      { success: false, error: 'Gagal mengambil data keuangan bulanan' },
+      { status: 500 }
+    );
+  }
+}

@@ -11,16 +11,21 @@ interface SidebarMenuItemProps {
   isExpanded: boolean;
   onToggle: () => void;
   isCollapsed?: boolean;
+  expandedItems: Record<string, boolean>;
+  onToggleChild: (id: string) => void;
 }
 
-const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({ item, isExpanded, onToggle, isCollapsed = false }) => {
+const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({ item, isExpanded, onToggle, isCollapsed = false, expandedItems, onToggleChild }) => {
   const pathname = usePathname();
   const hasChildren = item.children && item.children.length > 0;
   
-  // Check if current path matches this item or any of its children
+  // Check if current path matches this item or any of its children (including grandchildren)
   const isActive = pathname === item.href;
   const isChildActive = item.children?.some(child => pathname === child.href) || false;
-  const shouldHighlight = isActive || isChildActive;
+  const isGrandchildActive = item.children?.some(child => 
+    child.children?.some(grandchild => pathname === grandchild.href)
+  ) || false;
+  const shouldHighlight = isActive || isChildActive || isGrandchildActive;
 
   // Base styles
   const baseItemStyles = `
@@ -145,7 +150,7 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({ item, isExpanded, onT
         >
           <div className="ml-4 mt-1 space-y-1 border-l-2 border-gray-200 pl-4">
             {item.children?.map((child) => (
-              <SidebarChildItem key={child.id} item={child} />
+              <SidebarChildItem key={child.id} item={child} expandedItems={expandedItems} onToggle={onToggleChild} />
             ))}
           </div>
         </div>
@@ -180,11 +185,17 @@ const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({ item, isExpanded, onT
 
 interface SidebarChildItemProps {
   item: MenuItem;
+  expandedItems: Record<string, boolean>;
+  onToggle: (id: string) => void;
 }
 
-const SidebarChildItem: React.FC<SidebarChildItemProps> = ({ item }) => {
+const SidebarChildItem: React.FC<SidebarChildItemProps> = ({ item, expandedItems, onToggle }) => {
   const pathname = usePathname();
   const isActive = pathname === item.href;
+  const hasChildren = item.children && item.children.length > 0;
+  const isExpanded = expandedItems[item.id] || false;
+  const isChildActive = item.children?.some(child => pathname === child.href) || false;
+  const shouldHighlight = isActive || isChildActive;
 
   const baseStyles = `
     flex items-center gap-3 w-full px-4 py-2 rounded-lg
@@ -210,6 +221,41 @@ const SidebarChildItem: React.FC<SidebarChildItemProps> = ({ item }) => {
     );
   }
 
+  // Handle nested children (submenu within submenu)
+  if (hasChildren) {
+    return (
+      <div>
+        <button
+          onClick={() => onToggle(item.id)}
+          className={`${baseStyles} ${shouldHighlight ? activeStyles : inactiveStyles} justify-between`}
+        >
+          <div className="flex items-center gap-3">
+            {item.icon && <span className="shrink-0">{item.icon}</span>}
+            <span>{item.label}</span>
+          </div>
+          {isExpanded ? (
+            <ChevronDownIcon className="w-4 h-4 transition-transform" />
+          ) : (
+            <ChevronRightIcon className="w-4 h-4 transition-transform" />
+          )}
+        </button>
+        
+        {/* Nested children */}
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="ml-4 mt-1 space-y-1 border-l-2 border-gray-200 pl-3">
+            {item.children?.map((child) => (
+              <SidebarGrandchildItem key={child.id} item={child} />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Link
       href={item.href || '#'}
@@ -226,6 +272,31 @@ const SidebarChildItem: React.FC<SidebarChildItemProps> = ({ item }) => {
   );
 };
 
+// Third level menu item (grandchild)
+const SidebarGrandchildItem: React.FC<{ item: MenuItem }> = ({ item }) => {
+  const pathname = usePathname();
+  const isActive = pathname === item.href;
+
+  const baseStyles = `
+    flex items-center gap-3 w-full px-3 py-2 rounded-lg
+    transition-all duration-200 ease-in-out
+    text-sm
+  `;
+
+  const activeStyles = 'bg-blue-50 text-blue-700 font-medium';
+  const inactiveStyles = 'text-gray-600 hover:bg-gray-100 hover:text-gray-900';
+
+  return (
+    <Link
+      href={item.href || '#'}
+      className={`${baseStyles} ${isActive ? activeStyles : inactiveStyles}`}
+    >
+      {item.icon && <span className="shrink-0">{item.icon}</span>}
+      <span>{item.label}</span>
+    </Link>
+  );
+};
+
 interface SidebarMenuProps {
   items: MenuItem[];
   isCollapsed?: boolean;
@@ -234,13 +305,26 @@ interface SidebarMenuProps {
 export const SidebarMenu: React.FC<SidebarMenuProps> = ({ items, isCollapsed = false }) => {
   const pathname = usePathname();
   
-  // Auto-expand menus that contain the current active route
+  // Auto-expand menus that contain the current active route (including nested children)
   const getInitialExpandedState = () => {
     const expanded: Record<string, boolean> = {};
     items.forEach(item => {
       if (item.children) {
+        // Check direct children
         const hasActiveChild = item.children.some(child => pathname === child.href);
-        expanded[item.id] = hasActiveChild;
+        // Check grandchildren (nested children)
+        const hasActiveGrandchild = item.children.some(child => 
+          child.children?.some(grandchild => pathname === grandchild.href)
+        );
+        expanded[item.id] = hasActiveChild || hasActiveGrandchild;
+        
+        // Also expand nested children if they have active grandchild
+        item.children.forEach(child => {
+          if (child.children) {
+            const hasActiveGrandchild = child.children.some(gc => pathname === gc.href);
+            expanded[child.id] = hasActiveGrandchild;
+          }
+        });
       }
     });
     return expanded;
@@ -264,6 +348,8 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ items, isCollapsed = f
           isExpanded={expandedItems[item.id] || false}
           onToggle={() => toggleItem(item.id)}
           isCollapsed={isCollapsed}
+          expandedItems={expandedItems}
+          onToggleChild={toggleItem}
         />
       ))}
     </nav>

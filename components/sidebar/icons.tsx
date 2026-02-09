@@ -1,162 +1,43 @@
 import React from 'react';
+import {
+  LayoutDashboard, Users, Settings, Calendar, ClipboardList, Clock, Package,
+  CircleDollarSign, FileText, LogOut, ChevronDown, ChevronRight, Menu, X,
+  UserPlus, Truck, Briefcase, Send, History, CheckCircle, PackagePlus,
+  PackageMinus, TrendingUp, TrendingDown, BarChart3, FileText as FileTextLucide,
+  Skull, Building2, Bird, Warehouse
+} from 'lucide-react';
 
 interface IconProps {
   className?: string;
 }
 
-export const DashboardIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-  </svg>
-);
-
-export const UsersIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-  </svg>
-);
-
-export const SettingsIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-  </svg>
-);
-
-export const CalendarIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-  </svg>
-);
-
-export const ClipboardIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-  </svg>
-);
-
-export const ClockIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
-export const BoxIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-  </svg>
-);
-
-export const CurrencyIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
-export const DocumentIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-  </svg>
-);
-
-export const LogoutIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-  </svg>
-);
-
-export const ChevronDownIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-  </svg>
-);
-
-export const ChevronRightIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-  </svg>
-);
-
-export const MenuIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-  </svg>
-);
-
-export const CloseIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-  </svg>
-);
-
-export const UserPlusIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-  </svg>
-);
-
-export const TruckIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-3-3m3 3l-3 3M8 17h12m0 0l-3-3m3 3l-3 3" />
-  </svg>
-);
-
-export const BriefcaseIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-  </svg>
-);
-
-export const PaperAirplaneIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-  </svg>
-);
-
-export const HistoryIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
-export const CheckCircleIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
-export const InboxInIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2m-4-1v8m0 0l3-3m-3 3L9 8m-5 5h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293h3.172a1 1 0 00.707-.293l2.414-2.414a1 1 0 01.707-.293H20" />
-  </svg>
-);
-
-export const InboxOutIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2m-4-1v8m0 0l-3-3m3 3l3-3m-5 5h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293h3.172a1 1 0 00.707-.293l2.414-2.414a1 1 0 01.707-.293H20" />
-  </svg>
-);
-
-export const TrendingUpIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-  </svg>
-);
-
-export const TrendingDownIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
-  </svg>
-);
-
-export const ChartIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-  </svg>
-);
-
-export const FileTextIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-  </svg>
-);
+export const DashboardIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <LayoutDashboard className={className} />;
+export const UsersIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <Users className={className} />;
+export const SettingsIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <Settings className={className} />;
+export const CalendarIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <Calendar className={className} />;
+export const ClipboardIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <ClipboardList className={className} />;
+export const ClockIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <Clock className={className} />;
+export const BoxIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <Package className={className} />;
+export const CurrencyIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <CircleDollarSign className={className} />;
+export const DocumentIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <FileText className={className} />;
+export const LogoutIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <LogOut className={className} />;
+export const ChevronDownIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <ChevronDown className={className} />;
+export const ChevronRightIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <ChevronRight className={className} />;
+export const MenuIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <Menu className={className} />;
+export const CloseIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <X className={className} />;
+export const UserPlusIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <UserPlus className={className} />;
+export const TruckIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <Truck className={className} />;
+export const BriefcaseIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <Briefcase className={className} />;
+export const PaperAirplaneIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <Send className={className} />;
+export const HistoryIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <History className={className} />;
+export const CheckCircleIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <CheckCircle className={className} />;
+export const InboxInIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <PackagePlus className={className} />;
+export const InboxOutIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <PackageMinus className={className} />;
+export const TrendingUpIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <TrendingUp className={className} />;
+export const TrendingDownIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <TrendingDown className={className} />;
+export const ChartIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <BarChart3 className={className} />;
+export const FileTextIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <FileTextLucide className={className} />;
+export const SkullIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <Skull className={className} />;
+export const OfficeBuildingIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <Building2 className={className} />;
+export const ChickenIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <Bird className={className} />;
+export const WarehouseIcon: React.FC<IconProps> = ({ className = 'w-5 h-5' }) => <Warehouse className={className} />;

@@ -5,55 +5,67 @@ import { generateToken } from '@/lib/jwt';
 
 /**
  * POST /api/auth/login
- * Login endpoint dengan validasi email, password, dan JWT generation
+ * Login endpoint dengan validasi NIP, password, dan JWT generation
  */
 export async function POST(request: NextRequest) {
   try {
     // 1. Parse request body
     const body = await request.json();
-    const { email, password } = body;
+    const { nip, password } = body;
 
     // Validasi input
-    if (!email || !password) {
+    if (!nip || !password) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Email dan password harus diisi',
+          message: 'NIP dan password harus diisi',
         },
         { status: 400 }
       );
     }
 
-    // Validasi format email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Format email tidak valid',
+    // 2. Cari user berdasarkan NIP melalui relasi karyawan
+    const karyawan = await prisma.karyawan.findUnique({
+      where: { nip: nip.trim() },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            password: true,
+            role: true,
+          },
         },
-        { status: 400 }
-      );
-    }
-
-    // 2. Cari user berdasarkan email
-    const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        password: true,
-        role: true,
       },
     });
+
+    // Jika bukan karyawan, cek apakah NIP cocok dengan admin/owner (by name)
+    // Admin/Owner login tetap bisa pakai NIP atau nama
+    let user = karyawan?.user;
+
+    if (!user) {
+      // Fallback: cari admin/owner by name (untuk akun admin yang tidak punya karyawan)
+      const adminUser = await prisma.user.findFirst({
+        where: {
+          name: nip.trim(),
+          role: { in: ['ADMIN', 'OWNER'] },
+        },
+        select: {
+          id: true,
+          name: true,
+          password: true,
+          role: true,
+        },
+      });
+      user = adminUser;
+    }
 
     // User tidak ditemukan
     if (!user) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Email atau password salah',
+          message: 'NIP atau password salah',
         },
         { status: 401 }
       );
@@ -66,7 +78,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Email atau password salah',
+          message: 'NIP atau password salah',
         },
         { status: 401 }
       );
@@ -86,7 +98,7 @@ export async function POST(request: NextRequest) {
         user: {
           id: user.id.toString(),
           name: user.name,
-          email: user.email,
+          nip: karyawan?.nip || null,
           role: user.role,
         },
         token,

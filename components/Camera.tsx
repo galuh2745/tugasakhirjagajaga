@@ -15,6 +15,7 @@ export const Camera: React.FC<CameraProps> = ({ onCapture, onCancel, isSubmittin
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [capturedBlob, setCapturedBlob] = useState<Blob | null>(null);
   const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [locationAddress, setLocationAddress] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoadingCamera, setIsLoadingCamera] = useState(true);
   const [isLoadingLocation, setIsLoadingLocation] = useState(true);
@@ -24,11 +25,24 @@ export const Camera: React.FC<CameraProps> = ({ onCapture, onCancel, isSubmittin
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLocation({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          setLocation({ latitude: lat, longitude: lon });
+
+          // Reverse geocode via server-side API (supports Google Maps + Nominatim fallback)
+          try {
+            const res = await fetch(`/api/absensi/geocode?lat=${lat}&lon=${lon}`);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.success && data.address) {
+                setLocationAddress(data.address);
+              }
+            }
+          } catch (e) {
+            console.error('Reverse geocoding error:', e);
+          }
+
           setIsLoadingLocation(false);
         },
         (err) => {
@@ -239,7 +253,7 @@ export const Camera: React.FC<CameraProps> = ({ onCapture, onCancel, isSubmittin
               {isLoadingLocation ? (
                 <span>Mendapatkan lokasi...</span>
               ) : location ? (
-                <span>Lokasi: {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}</span>
+                <span className="leading-tight">{locationAddress || `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`}</span>
               ) : (
                 <span>Lokasi tidak tersedia</span>
               )}
