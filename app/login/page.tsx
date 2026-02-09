@@ -1,14 +1,14 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { User, Lock, ArrowRight, Loader2, Info, ShieldCheck, BarChart3, Zap, X } from 'lucide-react';
+import { User, Lock, ArrowRight, Loader2, Info, KeyRound, X, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import Image from 'next/image';
 
 export default function LoginPage() {
   return (
@@ -29,6 +29,12 @@ function LoginContent() {
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [forgotNip, setForgotNip] = useState('');
   const [forgotLoading, setForgotLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,113 +109,114 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* ===== BRANDING (KIRI) ===== */}
+    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
+      {/* ===== BACKGROUND ===== */}
+      <div className="absolute inset-0 z-0">
+        {/* Background image */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'url(/images/logo/logocv.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            filter: 'blur(6px) brightness(0.4)',
+            transform: 'scale(1.1)',
+          }}
+        />
+        {/* Blue gradient overlay */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.85) 0%, rgba(37, 99, 235, 0.7) 40%, rgba(29, 78, 216, 0.8) 70%, rgba(15, 23, 42, 0.9) 100%)',
+          }}
+        />
+        {/* Subtle pattern overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: '40px 40px',
+          }}
+        />
+      </div>
+
+      {/* ===== FLOATING DECORATIVE ELEMENTS ===== */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full opacity-10"
+          style={{ background: 'radial-gradient(circle, rgba(96,165,250,0.4) 0%, transparent 70%)' }} />
+        <div className="absolute -bottom-32 -left-32 w-125 h-125 rounded-full opacity-10"
+          style={{ background: 'radial-gradient(circle, rgba(147,197,253,0.3) 0%, transparent 70%)' }} />
+        <div className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full opacity-5"
+          style={{ background: 'radial-gradient(circle, rgba(253,224,71,0.5) 0%, transparent 70%)' }} />
+      </div>
+
+      {/* ===== MAIN LOGIN CARD ===== */}
       <motion.div
-        initial={{ opacity: 0, x: -30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="lg:w-1/2 text-white p-8 lg:p-12 flex flex-col justify-center relative"
-        style={{
-          backgroundImage: 'url(/images/logo/logocv.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={mounted ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="relative z-10 w-full max-w-110 mx-4"
       >
-        <div className="absolute inset-0 bg-black/60" />
-
-        <div className="max-w-md mx-auto lg:mx-0 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="mb-8"
-          >
-            <div className="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/20">
-              <ShieldCheck className="w-12 h-12 text-white" />
-            </div>
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            className="text-4xl lg:text-5xl font-bold mb-3"
-          >
-            CV Aswi Sentosa Lampung
-          </motion.h1>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-            className="text-xl lg:text-2xl font-light text-gray-200 mb-6"
-          >
-            Sistem Enterprise Management
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="text-gray-300 leading-relaxed mb-8 text-sm lg:text-base"
-          >
-            Berinovasi Dengan Kualitas Terbaik.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.5 }}
-            className="flex flex-wrap gap-4 text-sm"
-          >
-            {[
-              { icon: ShieldCheck, label: 'Higienis' },
-              { icon: BarChart3, label: 'Akurat' },
-              { icon: Zap, label: 'Cepat' },
-            ].map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
-                <Icon className="w-4 h-4" />
-                <span>{label}</span>
-              </div>
-            ))}
-          </motion.div>
-
-          <div className="hidden lg:block mt-12 pt-8 border-t border-white/20">
-            <p className="text-gray-300 text-sm">
-              © 2026 CV Aswi Sentosa. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* ===== FORM LOGIN (KANAN) ===== */}
-      <div className="lg:w-1/2 bg-background p-8 lg:p-12 flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="w-full max-w-md"
+        <div
+          className="rounded-3xl px-8 py-6 md:px-10 md:py-8 shadow-2xl border border-white/20"
+          style={{
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+          }}
         >
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-foreground mb-2">Selamat Datang</h3>
-            <p className="text-muted-foreground">Silakan masuk untuk melanjutkan</p>
+          {/* ===== LOGO AVATAR ===== */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={mounted ? { opacity: 1, scale: 1 } : {}}
+            transition={{ delay: 0.15, duration: 0.4, ease: 'easeOut' }}
+            className="flex flex-col items-center mb-4"
+          >
+            <div
+              className="relative w-20 h-20 rounded-full overflow-hidden border-[3px] mb-3"
+              style={{
+                borderColor: '#2563eb',
+                boxShadow: '0 8px 32px rgba(37, 99, 235, 0.25), 0 0 0 4px rgba(37, 99, 235, 0.1)',
+              }}
+            >
+              <Image
+                src="/images/logo/logocvaswihd.png"
+                alt="Logo CV Aswi Sentosa"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+            <h1 className="text-lg font-bold text-gray-800 tracking-tight">
+              CV Aswi Sentosa
+            </h1>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Sistem Absensi & Inventory
+            </p>
+          </motion.div>
+
+          {/* ===== DIVIDER ===== */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="text-[11px] font-medium text-gray-400 uppercase tracking-wider">Masuk ke Akun</span>
+            <div className="flex-1 h-px bg-gray-200" />
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleLogin} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="nip">NIP</Label>
-              <div className="relative">
-                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          {/* ===== FORM LOGIN ===== */}
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="nip" className="text-sm font-semibold text-gray-700">
+                NIP
+              </Label>
+              <div className="relative group">
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-gray-400 transition-colors duration-200 group-focus-within:text-blue-600" />
                 <Input
                   id="nip"
                   type="text"
                   value={nip}
                   onChange={(e) => setNip(e.target.value)}
-                  className="pl-10 h-11"
+                  className="pl-11 h-11 rounded-xl border-gray-200 bg-gray-50/80 text-gray-800 placeholder:text-gray-400 transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:bg-white hover:border-gray-300"
                   placeholder="Masukkan NIP"
                   required
                   autoComplete="username"
@@ -217,20 +224,30 @@ function LoginContent() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <div className="space-y-1.5">
+              <Label htmlFor="password" className="text-sm font-semibold text-gray-700">
+                Password
+              </Label>
+              <div className="relative group">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-gray-400 transition-colors duration-200 group-focus-within:text-blue-600" />
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 h-11"
+                  className="pl-11 pr-11 h-11 rounded-xl border-gray-200 bg-gray-50/80 text-gray-800 placeholder:text-gray-400 transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:bg-white hover:border-gray-300"
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="h-4.5 w-4.5" /> : <Eye className="h-4.5 w-4.5" />}
+                </button>
               </div>
             </div>
 
@@ -238,30 +255,37 @@ function LoginContent() {
               <motion.div
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-3 p-3 bg-destructive/10 border border-destructive/20 rounded-lg"
+                className="flex items-center gap-3 p-3.5 rounded-xl border"
+                style={{
+                  backgroundColor: 'rgba(239, 68, 68, 0.06)',
+                  borderColor: 'rgba(239, 68, 68, 0.15)',
+                }}
               >
-                <Info className="h-4 w-4 text-destructive flex-shrink-0" />
-                <span className="text-destructive text-sm">{error}</span>
+                <Info className="h-4 w-4 text-red-500 shrink-0" />
+                <span className="text-red-600 text-sm">{error}</span>
               </motion.div>
             )}
 
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-11 text-base"
-              style={{ backgroundColor: '#8B6B1F' }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#A67C00')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#8B6B1F')}
+              className="w-full h-11 text-sm font-semibold rounded-xl shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] disabled:opacity-70 disabled:hover:scale-100"
+              style={{
+                backgroundColor: '#2563eb',
+                color: 'white',
+              }}
+              onMouseEnter={(e) => { if (!loading) e.currentTarget.style.backgroundColor = '#1d4ed8'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#2563eb'; }}
             >
               {loading ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin mr-2" />
                   Memproses...
                 </>
               ) : (
                 <>
                   Masuk
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-5 w-5 ml-2" />
                 </>
               )}
             </Button>
@@ -270,108 +294,141 @@ function LoginContent() {
               <button
                 type="button"
                 onClick={() => setShowForgotModal(true)}
-                className="text-sm font-medium transition-colors hover:underline"
-                style={{ color: '#8B6B1F' }}
+                className="text-sm font-medium transition-all duration-200 hover:underline underline-offset-4"
+                style={{ color: '#2563eb' }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = '#1d4ed8'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = '#2563eb'; }}
               >
                 Lupa Password?
               </button>
             </div>
           </form>
 
-          {/* Forgot Modal */}
-          {showForgotModal && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Card className="max-w-md w-full">
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <CardTitle>Lupa Password</CardTitle>
-                        <CardDescription>
-                          Masukkan NIP untuk mengirim permintaan reset password ke admin.
-                        </CardDescription>
-                      </div>
-                      <button
-                        onClick={() => { setShowForgotModal(false); setForgotNip(''); }}
-                        className="text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        <X className="h-5 w-5" />
-                      </button>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label>NIP</Label>
-                      <Input
-                        type="text"
-                        value={forgotNip}
-                        onChange={(e) => setForgotNip(e.target.value)}
-                        placeholder="Masukkan NIP"
-                      />
-                    </div>
-                    <div className="flex gap-3">
-                      <Button
-                        onClick={handleForgotPassword}
-                        disabled={forgotLoading}
-                        className="flex-1"
-                        style={{ backgroundColor: '#8B6B1F' }}
-                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#A67C00')}
-                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#8B6B1F')}
-                      >
-                        {forgotLoading ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            Mengirim...
-                          </>
-                        ) : (
-                          'Kirim Permintaan'
-                        )}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => { setShowForgotModal(false); setForgotNip(''); }}
-                        className="flex-1"
-                      >
-                        Batal
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+          {/* ===== INFO SECTION ===== */}
+          <div className="mt-5 pt-4 border-t border-gray-100">
+            <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-blue-50/70 border border-blue-100">
+              <Info className="w-4 h-4 text-blue-500 shrink-0" />
+              <p className="text-gray-500 text-xs leading-snug">
+                <span className="font-semibold text-gray-600">Butuh bantuan?</span> Hubungi admin untuk masalah login.
+              </p>
             </div>
-          )}
-
-          {/* Divider */}
-          <div className="my-8 flex items-center">
-            <div className="flex-1 border-t border-border" />
-            <span className="px-4 text-sm text-muted-foreground">Informasi</span>
-            <div className="flex-1 border-t border-border" />
           </div>
+        </div>
 
-          {/* Info Card */}
-          <Card>
-            <CardContent className="flex items-start gap-3 pt-4">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-amber-100">
-                <Info className="w-5 h-5 text-amber-700" />
+        {/* ===== FOOTER ===== */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={mounted ? { opacity: 1 } : {}}
+          transition={{ delay: 0.6, duration: 0.4 }}
+          className="text-center text-white/60 text-xs mt-4"
+        >
+          © 2026 CV Aswi Sentosa Lampung. All rights reserved.
+        </motion.p>
+      </motion.div>
+
+      {/* ===== FORGOT PASSWORD MODAL ===== */}
+      {showForgotModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.15 }}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => { setShowForgotModal(false); setForgotNip(''); }}
+          />
+
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="relative w-full max-w-md"
+          >
+            <div
+              className="rounded-2xl overflow-hidden shadow-2xl border border-white/20"
+              style={{
+                background: 'rgba(255, 255, 255, 0.98)',
+                backdropFilter: 'blur(20px)',
+              }}
+            >
+              {/* Modal Header with Blue Gradient */}
+              <div
+                className="px-6 py-5"
+                style={{
+                  background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%)',
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center backdrop-blur-sm border border-white/20">
+                      <KeyRound className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white">Lupa Password</h3>
+                      <p className="text-blue-100 text-sm mt-0.5">Reset melalui admin</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => { setShowForgotModal(false); setForgotNip(''); }}
+                    className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white/80 hover:bg-white/20 hover:text-white transition-all duration-200"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
-              <div>
-                <h4 className="font-medium text-foreground text-sm mb-1">Butuh bantuan?</h4>
-                <p className="text-muted-foreground text-xs leading-relaxed">
-                  Hubungi admin jika Anda mengalami masalah saat login atau lupa password.
+
+              {/* Modal Body */}
+              <div className="px-6 py-6 space-y-5">
+                <p className="text-gray-500 text-sm leading-relaxed">
+                  Masukkan NIP untuk mengirim permintaan reset password ke admin.
                 </p>
-              </div>
-            </CardContent>
-          </Card>
 
-          <div className="lg:hidden mt-8 text-center">
-            <p className="text-muted-foreground text-sm">© 2026 CV Aswi Sentosa Lampung</p>
-          </div>
-        </motion.div>
-      </div>
+                <div className="space-y-1.5">
+                  <Label className="text-sm font-semibold text-gray-700">NIP</Label>
+                  <div className="relative group">
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-gray-400 transition-colors duration-200 group-focus-within:text-blue-600" />
+                    <Input
+                      type="text"
+                      value={forgotNip}
+                      onChange={(e) => setForgotNip(e.target.value)}
+                      placeholder="Masukkan NIP"
+                      className="pl-11 h-12 rounded-xl border-gray-200 bg-gray-50/80 text-gray-800 placeholder:text-gray-400 transition-all duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:bg-white hover:border-gray-300"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-1">
+                  <Button
+                    onClick={handleForgotPassword}
+                    disabled={forgotLoading}
+                    className="flex-1 h-11 font-semibold rounded-xl shadow-md transition-all duration-200 hover:shadow-lg hover:scale-[1.01] active:scale-[0.99] disabled:opacity-70 disabled:hover:scale-100"
+                    style={{ backgroundColor: '#2563eb', color: 'white' }}
+                    onMouseEnter={(e) => { if (!forgotLoading) e.currentTarget.style.backgroundColor = '#1d4ed8'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#2563eb'; }}
+                  >
+                    {forgotLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        Mengirim...
+                      </>
+                    ) : (
+                      'Kirim Permintaan'
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => { setShowForgotModal(false); setForgotNip(''); }}
+                    className="flex-1 h-11 font-semibold rounded-xl border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-700 transition-all duration-200"
+                  >
+                    Batal
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

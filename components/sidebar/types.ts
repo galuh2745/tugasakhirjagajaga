@@ -8,6 +8,11 @@ export interface MenuItem {
   badge?: string;
 }
 
+export interface MenuGroup {
+  title: string;
+  items: MenuItem[];
+}
+
 export interface SidebarProps {
   className?: string;
 }

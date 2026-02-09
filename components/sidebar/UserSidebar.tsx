@@ -19,7 +19,6 @@ export default function UserSidebar() {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-    // Fetch user info
     const fetchUserInfo = async () => {
       try {
         const res = await fetch('/api/auth/me', { credentials: 'include' });
@@ -51,154 +50,134 @@ export default function UserSidebar() {
   };
 
   const menuItems = [
-    {
-      name: 'Absensi',
-      href: '/dashboard/user',
-      icon: <Clock className="w-5 h-5" />,
-      description: 'Absen masuk & pulang',
-    },
-    {
-      name: 'Izin & Cuti',
-      href: '/dashboard/user/izin-cuti',
-      icon: <ClipboardList className="w-5 h-5" />,
-      description: 'Ajukan izin atau cuti',
-    },
-    {
-      name: 'Riwayat Absensi',
-      href: '/dashboard/user/riwayat',
-      icon: <History className="w-5 h-5" />,
-      description: 'Lihat riwayat kehadiran',
-    },
-    {
-      name: 'Akun Saya',
-      href: '/dashboard/user/akun',
-      icon: <User className="w-5 h-5" />,
-      description: 'Pengaturan akun',
-    },
+    { name: 'Absensi', href: '/dashboard/user', icon: <Clock className="w-5 h-5" />, description: 'Absen masuk & pulang' },
+    { name: 'Izin & Cuti', href: '/dashboard/user/izin-cuti', icon: <ClipboardList className="w-5 h-5" />, description: 'Ajukan izin atau cuti' },
+    { name: 'Riwayat Absensi', href: '/dashboard/user/riwayat', icon: <History className="w-5 h-5" />, description: 'Lihat riwayat kehadiran' },
+    { name: 'Akun Saya', href: '/dashboard/user/akun', icon: <User className="w-5 h-5" />, description: 'Pengaturan akun' },
   ];
 
   const isActive = (href: string) => {
-    if (href === '/dashboard/user') {
-      return pathname === '/dashboard/user';
-    }
+    if (href === '/dashboard/user') return pathname === '/dashboard/user';
     return pathname.startsWith(href);
   };
+
+  // Prevent body scroll when mobile sidebar is open
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : 'unset';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [isMobileMenuOpen]);
 
   return (
     <>
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40">
-        <div className="flex items-center justify-between px-4 h-16">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg overflow-hidden bg-black flex items-center justify-center">
-              <Image
-                src="/images/logo/logocv.jpg"
-                alt="CV Aswi Sentosa Logo"
-                width={32}
-                height={32}
-                className="object-contain"
-              />
+      <div className="lg:hidden fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-gray-200/60 z-40 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+        <div className="flex items-center justify-between px-4 h-14">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg overflow-hidden bg-black flex items-center justify-center shadow-sm">
+              <Image src="/images/logo/logocv.jpg" alt="Logo" width={32} height={32} className="object-contain" />
             </div>
-            <span className="font-semibold text-gray-800">Absensi Karyawan</span>
+            <span className="font-semibold text-sm text-gray-800">Portal Karyawan</span>
           </div>
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6 text-gray-600" /> : <Menu className="w-6 h-6 text-gray-600" />}
+            {isMobileMenuOpen ? <X className="w-5 h-5 text-gray-500" /> : <Menu className="w-5 h-5 text-gray-500" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
+      <div
+        className={`lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        onClick={() => setIsMobileMenuOpen(false)}
+      />
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full bg-white border-r border-gray-200 z-50 transition-transform duration-300 ease-in-out w-72
-          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
+        className={`
+          fixed top-0 left-0 h-full z-50 w-64
+          bg-gray-50/80 backdrop-blur-sm border-r border-gray-200/80 shadow-[1px_0_3px_rgba(0,0,0,0.03)]
+          transition-transform duration-300 ease-in-out
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
       >
         <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="p-5 border-b border-gray-100">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl overflow-hidden bg-black flex items-center justify-center shadow-lg">
-                <Image
-                  src="/images/logo/logocv.jpg"
-                  alt="CV Aswi Sentosa Logo"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                />
-              </div>
-              <div>
-                <h1 className="font-bold text-gray-800">CV Aswi Sentosa</h1>
-                <p className="text-xs text-gray-500">Portal Karyawan</p>
-              </div>
+          {/* ── Logo ── */}
+          <div className="flex items-center gap-3 px-4 h-16 border-b border-gray-200/80">
+            <div className="w-9 h-9 rounded-lg overflow-hidden bg-black flex items-center justify-center shadow-sm">
+              <Image src="/images/logo/logocv.jpg" alt="Logo" width={36} height={36} className="object-contain" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-sm font-bold text-gray-800 truncate leading-tight">CV Aswi Sentosa</h1>
+              <p className="text-[11px] text-gray-400 leading-tight">Portal Karyawan</p>
             </div>
           </div>
 
-          {/* User Info */}
+          {/* ── User Info ── */}
           {userInfo && (
-            <div className="px-5 py-4 border-b border-gray-100">
+            <div className="px-4 py-4 border-b border-gray-200/80">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center ring-2 ring-white shadow-sm">
-                  <span className="text-blue-600 font-semibold text-sm">
+                <div className="w-9 h-9 rounded-full bg-linear-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm ring-2 ring-white">
+                  <span className="text-white font-bold text-xs">
                     {userInfo.nama.charAt(0).toUpperCase()}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-gray-800 text-sm truncate">{userInfo.nama}</p>
-                  <p className="text-xs text-gray-500">{userInfo.nip}</p>
+                  <p className="font-medium text-gray-800 text-sm truncate leading-tight">{userInfo.nama}</p>
+                  <p className="text-[11px] text-gray-400 leading-tight">{userInfo.nip}</p>
                 </div>
               </div>
               <div className="mt-2">
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-600">
                   {userInfo.jenis_karyawan}
                 </span>
               </div>
             </div>
           )}
 
-          {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto p-4">
-            <div className="space-y-1">
+          {/* ── Navigation ── */}
+          <nav className="flex-1 overflow-y-auto px-3 py-4">
+            <div className="px-3 mb-2">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Menu</span>
+            </div>
+            <div className="space-y-0.5">
               {menuItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                    isActive(item.href)
-                      ? 'bg-red-50 text-red-700 shadow-sm'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                  }`}
+                  className={`
+                    flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm
+                    transition-all duration-150 ease-in-out group
+                    ${isActive(item.href)
+                      ? 'bg-blue-50 text-blue-700 font-semibold border-l-3 border-blue-600 pl-2.25'
+                      : 'text-gray-700 hover:bg-gray-100/80 hover:text-gray-900'
+                    }
+                  `}
                 >
-                  <span className={isActive(item.href) ? 'text-red-600' : 'text-gray-400'}>
+                  <span className={`shrink-0 transition-colors duration-150 ${isActive(item.href) ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600'}`}>
                     {item.icon}
                   </span>
-                  <div>
-                    <p className="font-medium text-sm">{item.name}</p>
-                    <p className="text-xs text-gray-400">{item.description}</p>
+                  <div className="min-w-0">
+                    <p className="leading-tight truncate">{item.name}</p>
+                    <p className={`text-[11px] leading-tight mt-0.5 truncate ${isActive(item.href) ? 'text-blue-500/70' : 'text-gray-400'}`}>
+                      {item.description}
+                    </p>
                   </div>
                 </Link>
               ))}
             </div>
           </nav>
 
-          {/* Logout Button */}
-          <div className="p-4 border-t border-gray-100">
+          {/* ── Logout ── */}
+          <div className="px-3 py-3 border-t border-gray-200/80">
             <button
               onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg text-sm font-medium text-red-500 hover:bg-red-50 hover:text-red-600 transition-all duration-150"
             >
-              <LogOut className="w-5 h-5" />
-              <span className="font-medium text-sm">Keluar</span>
+              <LogOut className="w-4.5 h-4.5" />
+              <span>Keluar</span>
             </button>
           </div>
         </div>

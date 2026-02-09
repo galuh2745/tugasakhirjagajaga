@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
           role: true,
         },
       });
-      user = adminUser;
+      user = adminUser ?? undefined;
     }
 
     // User tidak ditemukan
